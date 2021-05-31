@@ -1,8 +1,11 @@
+import 'package:chat_app_test/helpers/mostrar_alerta.dart';
+import 'package:chat_app_test/services/auth_service.dart';
 import 'package:chat_app_test/widgets/button_widget.dart';
 import 'package:chat_app_test/widgets/input_widget.dart';
 import 'package:chat_app_test/widgets/label_widget.dart';
 import 'package:chat_app_test/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -47,6 +50,7 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -65,7 +69,22 @@ class __FormState extends State<_Form> {
           ),
           ButtonWidget(
             text: 'Sign In',
-            onPressed: () => print('Mail: ${emailController.text}'),
+            onPressed: authService.autenticando
+                ? null
+                : () async {
+                    FocusScope.of(context).unfocus();
+                    final loginOk = await authService.login(
+                      emailController.text.trim(),
+                      passController.text.trim(),
+                    );
+                    if (loginOk) {
+                      //Navegar a otra pantalla
+                      Navigator.pushReplacementNamed(context, 'user');
+                    } else {
+                      mostrarAlerta(context, 'Login incorrecto',
+                          'Revise sus credenciales');
+                    }
+                  },
           ),
         ],
       ),
