@@ -1,5 +1,6 @@
 import 'package:chat_app_test/helpers/mostrar_alerta.dart';
 import 'package:chat_app_test/services/auth_service.dart';
+import 'package:chat_app_test/services/socket_service.dart';
 import 'package:chat_app_test/widgets/button_widget.dart';
 import 'package:chat_app_test/widgets/input_widget.dart';
 import 'package:chat_app_test/widgets/label_widget.dart';
@@ -52,6 +53,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -85,7 +87,7 @@ class __FormState extends State<_Form> {
                       passController.text.trim(),
                     );
                     if (registerOk == true) {
-                      //Navegar a otra pantalla
+                      socketService.connect();
                       Navigator.pushReplacementNamed(context, 'user');
                     } else {
                       mostrarAlerta(context, 'Registro incorrecto', registerOk);
